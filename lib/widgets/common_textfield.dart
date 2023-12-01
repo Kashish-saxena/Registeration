@@ -14,20 +14,23 @@ class TextFieldWidget extends StatelessWidget {
   Function? onChange;
   Color? errorColor;
   Color? enabledColor;
+  Widget? suffixIcon;
 
-  TextFieldWidget(
-      {super.key,
-      this.hint,
-      this.labelText,
-      this.image,
-      required this.hintStyle,
-      this.labelStyle,
-      required this.obscureText,
-      required this.textEditingController,
-      this.prefixIcon,
-      this.onChange,
-      this.errorColor,
-      this.enabledColor});
+  TextFieldWidget({
+    super.key,
+    this.hint,
+    this.labelText,
+    this.image,
+    required this.hintStyle,
+    this.labelStyle,
+    required this.obscureText,
+    required this.textEditingController,
+    this.prefixIcon,
+    this.onChange,
+    this.errorColor,
+    this.enabledColor,
+    this.suffixIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +43,6 @@ class TextFieldWidget extends StatelessWidget {
         style: const TextStyle(fontSize: 16, color: Colors.white, height: 1.6),
         obscureText: obscureText,
         controller: textEditingController,
-        
         decoration: InputDecoration(
           //          errorBorder:const OutlineInputBorder(
           //     borderSide: BorderSide(color: Color.fromARGB(255, 255, 0, 0), width: 0.0),
@@ -50,8 +52,9 @@ class TextFieldWidget extends StatelessWidget {
               color: errorColor ?? ColorConstants.whiteColor,
             ),
           ),
-          enabledBorder:
-              OutlineInputBorder(borderSide: BorderSide(color: enabledColor ?? ColorConstants.whiteColor)),
+          enabledBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: enabledColor ?? ColorConstants.whiteColor)),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12.5,
             vertical: 12.5,
@@ -64,6 +67,8 @@ class TextFieldWidget extends StatelessWidget {
           hintText: hint,
           hintStyle: const TextStyle(color: Colors.white),
           prefixIcon: Icon(prefixIcon, color: Colors.white),
+          suffixIcon: suffixIcon,
+
           filled: true,
           fillColor: Colors.blue,
         ),
@@ -84,7 +89,6 @@ class ElevatedButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         elevation: 5,

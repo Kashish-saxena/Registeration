@@ -1,17 +1,10 @@
 class RegisterValidation {
-  // static bool isNameValid(String name) {
-  //   String pattern = r'([a-zA-Z])';
-  //   RegExp regExp = RegExp(pattern);
-  //   if (!regExp.hasMatch(name)) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   static bool isNameValid(String name) {
+    String pattern = r'^[a-z A-Z,.\-]+$';
+    RegExp regExp = RegExp(pattern);
     if (name.isEmpty) {
       return false;
-    } else if (!name.contains("@")) {
+    } else if (!regExp.hasMatch(name)) {
       return false;
     }
     return true;

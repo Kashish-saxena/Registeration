@@ -1,9 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_project/screens/login_screen.dart';
 import 'package:flutter_project/util/color_constants.dart';
 import 'package:flutter_project/util/registeration_validations.dart';
 import 'package:flutter_project/util/string_constants.dart';
-import 'package:flutter_project/widgets/common_button.dart';
+// import 'package:flutter_project/widgets/common_button.dart';
 import 'package:flutter_project/widgets/common_text.dart';
 import 'package:flutter_project/widgets/common_textfield.dart';
 
@@ -15,12 +16,13 @@ class RegisterationScreen extends StatefulWidget {
 }
 
 class _RegisterationScreenState extends State<RegisterationScreen> {
-  final _registerationKey = GlobalKey<FormState>();
   bool isNameValid = true;
   bool isEmailValid = true;
   bool isPhoneValid = true;
   bool isPasswordValid = true;
   bool isConfirmValid = true;
+  bool? isRememberMeClicked = false;
+  bool passwordVisible = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
@@ -43,7 +45,6 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: Form(
-            key: _registerationKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -58,7 +59,7 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                 const TextWidget(text: "Name"),
                 TextFieldWidget(
                   prefixIcon: Icons.person,
-                  hint: "",
+                  hint: "name",
                   hintStyle: TextStyle(color: ColorConstants.whiteColor),
                   obscureText: false,
                   textEditingController: nameController,
@@ -69,26 +70,22 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                       ? ColorConstants.whiteColor
                       : ColorConstants.amberColor,
                   onChange: (val) {
-                    print("val is $val");
                     if (!RegisterValidation.isNameValid(val)) {
                       setState(() {
                         isNameValid = false;
-                        print("isNameValid in if is $isNameValid");
                       });
                     } else {
                       setState(() {
                         isNameValid = true;
-                        print("isNameValid in else is $isNameValid");
                       });
                     }
                   },
                 ),
-                RegisterValidation.isNameValid(nameController.toString()) ==
-                        false
+                isNameValid == false
                     ? const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "Enter your Name",
+                          "Enter Your Name",
                           style: TextStyle(color: Colors.amber),
                         ),
                       )
@@ -118,8 +115,7 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                     }
                   },
                 ),
-                RegisterValidation.isEmailValid(emailController.toString()) ==
-                        false
+                isEmailValid == false
                     ? const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -152,7 +148,7 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                     }
                   },
                 ),
-                RegisterValidation.isPhoneValid(phoneController.text) == false
+                isPhoneValid == false
                     ? const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -163,9 +159,21 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                     : Container(),
                 const TextWidget(text: "Password"),
                 TextFieldWidget(
+                  obscureText: passwordVisible,
+                  suffixIcon: IconButton(
+                    color: ColorConstants.whiteColor,
+                    onPressed: () {
+                      setState(() {
+                        passwordVisible = !passwordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      passwordVisible ? Icons.visibility : Icons.visibility_off,
+                      color: ColorConstants.amberColor,
+                    ),
+                  ),
                   prefixIcon: Icons.lock,
                   hintStyle: TextStyle(color: ColorConstants.whiteColor),
-                  obscureText: false,
                   textEditingController: passwordController,
                   enabledColor: isPasswordValid == true
                       ? ColorConstants.whiteColor
@@ -185,8 +193,7 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                     }
                   },
                 ),
-                RegisterValidation.isPasswordValid(passwordController.text) ==
-                        false
+                isPasswordValid == false
                     ? const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
@@ -208,6 +215,9 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                       ? ColorConstants.whiteColor
                       : ColorConstants.amberColor,
                   onChange: (val) {
+                    nameController.addListener(() {
+                      print('Listener fired ${nameController.text}');
+                    });
                     if (!RegisterValidation.isConfirmValid(val)) {
                       setState(() {
                         isPhoneValid = false;
@@ -219,12 +229,37 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                     }
                   },
                 ),
-                RegisterValidation.isConfirmValid(confirmController.text) ==
-                        false
+                isConfirmValid == false
                     ? const Align(
                         alignment: Alignment.topLeft,
                         child: Text(
                           "Password doesn't match",
+                          style: TextStyle(color: Colors.amber),
+                        ),
+                      )
+                    : Container(),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Checkbox(
+                        value: isRememberMeClicked,
+                        side: BorderSide(color: ColorConstants.whiteColor),
+                        onChanged: (value) {
+                          setState(() {
+                            isRememberMeClicked = value;
+                          });
+                        }),
+                    Text(
+                      "Remember Me",
+                      style: TextStyle(color: ColorConstants.whiteColor),
+                    ),
+                  ],
+                ),
+                isRememberMeClicked == false
+                    ? const Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "click the checkbox",
                           style: TextStyle(color: Colors.amber),
                         ),
                       )
@@ -235,6 +270,7 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: ElevatedButton(
+                    //formkey
                     style: ElevatedButton.styleFrom(
                       elevation: 6,
                       backgroundColor: Colors.white,
@@ -246,19 +282,29 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                         setState(() {
                           isNameValid = false;
                         });
-                      } else if (emailController.text.toString().isEmpty) {
+                      }
+                      if (emailController.text.toString().isEmpty) {
                         setState(() {
                           isEmailValid = false;
                         });
-                      } else if (phoneController.text.toString().isEmpty) {
+                      }
+                      if (phoneController.text.toString().isEmpty) {
                         setState(() {
                           isPhoneValid = false;
                         });
-                      } else if (passwordController.text.toString().isEmpty) {
+                      }
+                      if (passwordController.text.toString().isEmpty) {
                         setState(() {
                           isPasswordValid = false;
                         });
-                      } else if (confirmController.text.toString().isEmpty) {
+                      }
+                      if (confirmController.text.toString().isEmpty) {
+                        setState(() {
+                          isConfirmValid = false;
+                        });
+                      }
+                      if (passwordController.text.toString() !=
+                          confirmController.text.toString()) {
                         setState(() {
                           isConfirmValid = false;
                         });
@@ -267,7 +313,8 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
                           isPhoneValid == true &&
                           isPasswordValid == true &&
                           isConfirmValid == true &&
-                          passwordController.text == confirmController.text) {
+                          passwordController.text == confirmController.text &&
+                          isRememberMeClicked == true) {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
