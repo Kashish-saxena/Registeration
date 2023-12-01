@@ -30,7 +30,7 @@ class _RegisterationScreenState extends State<RegisterationScreen> {
   TextEditingController confirmController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController();
+
     return Scaffold(
       backgroundColor: ColorConstants.blueColor,
       appBar: AppBar(
